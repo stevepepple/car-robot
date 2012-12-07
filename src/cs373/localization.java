@@ -25,19 +25,27 @@ public class localization {
 	    }
 	}
 	
+	public int mod(int a, int b) {
+		int result = a % b; 
+		if (result < 0) {
+			result += b;
+		}
+		return result; 
+	}
+	
 	// Z = sensed location is a landmark
 	public List<Double> sense(boolean Z) {
 		double sum = 0;
 		
 		/* Update the probabilities based on sensed location */
 		for (int i = 0; i < probs.size(); i++) {
-			boolean hit = (Z == world.get(i));
 			
+			boolean hit = (Z == world.get(i));
+				
 			double p = probs.get(i);
 			
 			if (hit == true) {
 				probs.set(i, p * pHit);
-				
 			} else {
 				probs.set(i, p * pMiss);
 			}
@@ -63,51 +71,36 @@ public class localization {
 	    List<Double> newProb = new ArrayList();
 	    
 		for (int i = 0; i < probs.size(); i++) {
-			int exact = (i - U) % probs.size();
-			int over = (i - U - 1) % probs.size();
-			int under = (i - U + 1) % probs.size();
-			
+			/* Account for the probability of under or overshooting */
 			double sum = 0.0;
-			/* Exact move */
-			if (exact < 0) {
-				sum += pExact * probs.get(probs.size() + exact);	
-			} else {
-				sum += pExact * probs.get(exact);
-			}
 			
-			if (over < 0) {
-				sum += pOver * probs.get(probs.size() + over);	
-			} else {
-				sum += pOver * probs.get(over);
-			}
+			/* Exact motion.
+			int prev = mod((i - U), probs.size());
+			sum = probs.get(prev);
+			*/
 
-			if (under < 0) {
-				sum += pUnder * probs.get(probs.size() + under);	
-			} else {
-				sum += pUnder * probs.get(under);			
-			}
-
+			sum = pExact * probs.get(mod((i - U), probs.size()));
+			sum = sum + pOver * probs.get(mod((i - U - 1),probs.size()));
+			sum = sum + pUnder * probs.get(mod((i - U + 1), probs.size()));
 			
-			probs.set(i, sum);
-			return probs;
+			newProb.add(sum);
 		}
 		
-		//sense(true);
-		//sense(false);
-		
-		return newProb;
+		probs = newProb;
+		return probs;
 	}
  
 	public localization() {
 		createWorld();
-		System.out.print(world);
-		System.out.print("\n");
-		System.out.print(sense(world.get(0)));
-		System.out.print("\n");
-		System.out.print(move(1));
-		System.out.print("\n");
-		System.out.print(sense(world.get(1)));
-		System.out.print("\n");
+		System.out.print(world + "\n");
+		
+		sense(world.get(0));
+		move(1);
+		sense(world.get(1));
+		move(1);
+		sense(world.get(2));
+		move(1);
+		sense(world.get(3));
 	}
 	
 	public static void main(String[] args){
