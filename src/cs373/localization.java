@@ -4,21 +4,23 @@ import java.util.*;
 public class localization {
 	
 	List<Double> probs = new ArrayList<Double>();
-	private int steps = 10;
+	private int steps = 5;
+	public int numMoves = 4;
 	private List<Boolean> world = new ArrayList<Boolean>();
+	public double position = 1.0;
+	public double belief = 0.0;
 	
 	final double pHit = 0.6;
 	final double pMiss = 0.2;
-	final double pos = 1.0;
 	
 	private void createWorld(){
 		/* Create a Even Probability Distribution */
 		for (int i = 0; i < steps; i++){
-			double dist = pos / steps;
+			double dist = position / steps;
 			probs.add(dist);	    	
 		}
 		
-		/* Create a Random World*/		
+		/* Create a Random World */		
 	    for(int i = 0; i < probs.size(); i++){
 	        Random rand = new Random();
 	        world.add(rand.nextBoolean());
@@ -52,10 +54,20 @@ public class localization {
 			sum = sum + probs.get(i);
 		}
 		
+		/* Reset stored best position */
+		belief = 0.0;
+		this.position = 1.0;
 		
 		/* Normalize the probabilities */
 		for (int i = 0; i < probs.size(); i++) {
-			probs.set(i, probs.get(i) / sum);
+			double prob = probs.get(i) / sum;
+			probs.set(i, prob);
+			
+		    if (prob > this.belief) {
+		    	belief = probs.get(i);
+		    	this.position = i;
+		    }
+			
 		}
 		
 		return probs;
@@ -74,14 +86,21 @@ public class localization {
 			/* Account for the probability of under or overshooting */
 			double sum = 0.0;
 			
-			/* Exact motion.
-			int prev = mod((i - U), probs.size());
+			/* Exact motion. 
+			int prev = mod((i - U), probs.size()); */
+			int prev = 0;
+			if (i > 0) {
+				prev = i - U;
+			} else {
+				prev = i;
+			}
 			sum = probs.get(prev);
-			*/
 
+			/*
 			sum = pExact * probs.get(mod((i - U), probs.size()));
 			sum = sum + pOver * probs.get(mod((i - U - 1),probs.size()));
 			sum = sum + pUnder * probs.get(mod((i - U + 1), probs.size()));
+			*/
 			
 			newProb.add(sum);
 		}
@@ -92,15 +111,18 @@ public class localization {
  
 	public localization() {
 		createWorld();
-		System.out.print(world + "\n");
 		
-		sense(world.get(0));
-		move(1);
-		sense(world.get(1));
-		move(1);
-		sense(world.get(2));
-		move(1);
-		sense(world.get(3));
+		for (int i = 0; i <= numMoves; i++) {
+			sense(world.get(i));
+			move(1);
+			sense(world.get(i));
+		}
+		//System.out.print(world + "\n");
+		//System.out.print(world.get(2));
+//		move(1);
+//		sense(world.get());
+//		move(1);
+//		sense(world.get(3));
 	}
 	
 	public static void main(String[] args){
