@@ -1,4 +1,5 @@
-package cs373;
+package gettherefromhere.org.robots.car.localization;
+
 import java.util.*;
 
 public class localization {
@@ -69,7 +70,6 @@ public class localization {
 		    }
 			
 		}
-		
 		return probs;
 	}
 	
@@ -87,7 +87,7 @@ public class localization {
 			double sum = 0.0;
 			
 			/* Exact motion. 
-			int prev = mod((i - U), probs.size()); */
+			int prev = mod((i - U), probs.size()); 
 			int prev = 0;
 			if (i > 0) {
 				prev = i - U;
@@ -95,12 +95,11 @@ public class localization {
 				prev = i;
 			}
 			sum = probs.get(prev);
+            */
 
-			/*
 			sum = pExact * probs.get(mod((i - U), probs.size()));
 			sum = sum + pOver * probs.get(mod((i - U - 1),probs.size()));
 			sum = sum + pUnder * probs.get(mod((i - U + 1), probs.size()));
-			*/
 			
 			newProb.add(sum);
 		}
@@ -117,12 +116,6 @@ public class localization {
 			move(1);
 			sense(world.get(i));
 		}
-		//System.out.print(world + "\n");
-		//System.out.print(world.get(2));
-//		move(1);
-//		sense(world.get());
-//		move(1);
-//		sense(world.get(3));
 	}
 	
 	public static void main(String[] args){
