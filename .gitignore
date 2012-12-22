@@ -8,3 +8,5 @@ bin/cs373/aStar.class
 *.class
 
 *.class
+
+resources/car.svg
