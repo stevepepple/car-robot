@@ -1,4 +1,5 @@
-package cs373;
+package org.gettherefromhere.robots.car;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +30,6 @@ public class aStar {
 		/* Up, Right, Down, Left */
 		boolean adj = true;
 		boolean[] recent = {true, true, true, true};
-		
 
 		/* Check Up */
 		if ((y - 1) < 0) {
@@ -168,6 +168,15 @@ public class aStar {
 			int[] best = {0,0};
 			
 			Collections.sort(open, new SortPoints());	
+			
+			for (int i = 0; i < open.size(); i++) {
+				System.out.print("option " + i + ": ");
+				System.out.print(open.get(i).cost + " : ");
+				System.out.print(Arrays.toString(open.get(i).path));
+				System.out.print("\n");
+			}
+			System.out.print("----\n");
+
 						
 			best = open.get(0).path;
 			gVal = open.get(0).gVal;
