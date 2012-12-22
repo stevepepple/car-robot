@@ -1,2 +1,10 @@
 
 .DS_Store
+
+bin/cs373/aStar.class
+
+*.class
+
+*.class
+
+*.class
